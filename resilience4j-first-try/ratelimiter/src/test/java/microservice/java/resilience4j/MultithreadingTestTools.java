@@ -5,6 +5,7 @@ import static java.lang.Math.min;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 
+// To with a bit of control to max threads running in the test.
 public abstract class MultithreadingTestTools {
   // https://blog.csdn.net/j16421881/article/details/85471678
   public void submitToForkJoinPool(int concurrency, Runnable task) {
