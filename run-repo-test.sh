@@ -35,8 +35,8 @@ touch "$test_report"
 
 # this part can be enahnced in the future
 # if it is singel project
-# '.not-project-test' is a file additionally indicates a overriding of not to execute as single project 
-if [[ -f "run-project-test.sh" && ! -f ".not-project-test" ]]; then
+# 'run-project-test.skip' is a file additionally indicates a overriding of not to execute as single project 
+if [[ -f "run-project-test.sh" && ! -f "run-project-test.skip" ]]; then
   execute_project_test "$test_report"
 else
   # for multiple projects

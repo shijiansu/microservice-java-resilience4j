@@ -80,24 +80,22 @@ public class RateLimiterTest extends MultithreadingTestTools {
   @Order(2)
   @Test
   public void limit_one_in_refresh_period_with_sequential() {
-    RateLimiter rateLimiter = RateLimiter.of("limit_one_in_refresh_period2", config);
+    RateLimiter rateLimiter = RateLimiter.of("limit_one_in_refresh_period_with_sequential", config);
     Supplier<String> restrictedSupplier =
         RateLimiter.decorateSupplier(rateLimiter, backendService::doSomething);
 
-    IntStream.rangeClosed(1, 5)
-        .sequential() // sequential so thread pool only take 1 thread to process
-        .forEach(
-            i -> {
-              log("TEST", "#" + i);
-              Try<String> aTry = Try.ofSupplier(restrictedSupplier);
-              log("TEST", "#" + i + " : " + aTry.isSuccess());
-              if (i % 2 == 1) {
-                assertTrue(aTry.isSuccess());
-              } else {
-                assertFalse(aTry.isSuccess());
-              }
-              sleep(500);
-            });
+    submitToForkJoinPool(
+        2,
+        () ->
+            IntStream.rangeClosed(1, 5)
+                .sequential() // sequential so thread pool only take 1 thread to process
+                .forEach(
+                    i -> {
+                      log("TEST", "#" + i);
+                      Try<String> aTry = Try.ofSupplier(restrictedSupplier);
+                      log("TEST", "#" + i + " : " + aTry.isSuccess());
+                      sleep(500);
+                    }));
   }
 
   // [15-Jun-2020 00:09:49:492] - [ForkJoinPool-1-worker-3] - TEST - #1
@@ -194,7 +192,6 @@ public class RateLimiterTest extends MultithreadingTestTools {
                       } else if (i == 2) {
                         assertFalse(aTry.isSuccess());
                       }
-                      sleep(700);
                     }));
   }
 }
