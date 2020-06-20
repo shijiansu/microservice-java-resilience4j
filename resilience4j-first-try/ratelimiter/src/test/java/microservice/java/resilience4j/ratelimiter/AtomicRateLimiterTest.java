@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 @TestMethodOrder(OrderAnnotation.class)
-public class RateLimiterTest extends MultithreadingTestTools {
+public class AtomicRateLimiterTest extends MultithreadingTestTools {
 
   BackendService backendService;
 
