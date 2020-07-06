@@ -9,7 +9,12 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>ratelimiter</module>
+    <module>resilience4j-first-try-ratelimiter</module>
+    <module>resilience4j-first-try-circuitbreaker</module>
+    <module>resilience4j-first-try-timelimiter</module>
+    <module>resilience4j-first-try-bulkhead</module>
+    <module>resilience4j-first-try-retry</module>
+    <module>resilience4j-first-try-common</module>
   </modules>
 
 </project>
