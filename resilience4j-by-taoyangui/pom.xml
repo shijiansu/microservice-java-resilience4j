@@ -29,9 +29,15 @@
     <!-- [START] examples -->
     <dependency>
       <groupId>io.github.resilience4j</groupId>
+      <!-- in 1.5.0, it includes circuitbeaker, ratelimiter, retry, bulkhead, timelimiter -->
       <artifactId>resilience4j-spring-boot2</artifactId>
       <version>1.5.0</version>
     </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId><!-- enable AOP, so that can use @CircuitBreaker -->
+      <artifactId>spring-boot-starter-aop</artifactId>
+    </dependency>
+
     <!-- [END] examples -->
     <dependency>
       <groupId>org.springframework.boot</groupId>

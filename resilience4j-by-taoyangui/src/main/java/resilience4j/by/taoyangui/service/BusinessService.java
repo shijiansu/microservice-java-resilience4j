@@ -2,7 +2,7 @@ package resilience4j.by.taoyangui.service;
 
 import resilience4j.by.taoyangui.data.Response;
 
-public interface CircuitBreakerService {
+public interface BusinessService {
 
-  Response circuitBreak();
+  Response businessProcess();
 }

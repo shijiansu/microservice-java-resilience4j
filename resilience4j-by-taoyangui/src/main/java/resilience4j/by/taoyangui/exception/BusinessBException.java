@@ -7,6 +7,5 @@ public class BusinessBException extends RuntimeException {
 
   public BusinessBException(String message) {
     super(message);
-    log.error(message);
   }
 }

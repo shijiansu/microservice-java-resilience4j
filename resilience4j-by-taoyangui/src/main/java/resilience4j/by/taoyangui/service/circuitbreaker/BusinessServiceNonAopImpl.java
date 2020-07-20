@@ -1,7 +1,7 @@
-package resilience4j.by.taoyangui.service;
+package resilience4j.by.taoyangui.service.circuitbreaker;
 
-import static resilience4j.by.taoyangui.CircuitBreakerUtil.BACKEND_A;
-import static resilience4j.by.taoyangui.CircuitBreakerUtil.getStatus;
+import static resilience4j.by.taoyangui.service.circuitbreaker.CircuitBreakerUtil.BACKEND_A;
+import static resilience4j.by.taoyangui.service.circuitbreaker.CircuitBreakerUtil.getStatus;
 
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
@@ -17,24 +17,27 @@ import org.springframework.stereotype.Service;
 import resilience4j.by.taoyangui.data.Response;
 import resilience4j.by.taoyangui.data.User;
 import resilience4j.by.taoyangui.remote.RemoteServiceConnector;
+import resilience4j.by.taoyangui.service.BusinessService;
 
 @Log4j2
-@Service
-public class CircuitBreakerServiceNonAopImpl implements CircuitBreakerService {
-  @Autowired CircuitBreakerRegistry registry;
+@Service("businessServiceNonAopImpl")
+public class BusinessServiceNonAopImpl implements BusinessService {
+  @Autowired CircuitBreakerRegistry cbRegistry;
 
   @Autowired RemoteServiceConnector connector;
 
   CircuitBreaker cb;
+
   CheckedFunction0<List<User>> checkedSupplier;
 
   @PostConstruct
   void init() {
-    cb = registry.circuitBreaker(BACKEND_A);
+    cb = cbRegistry.circuitBreaker(BACKEND_A);
+    // addCircuitBreakerListener(cb);
     checkedSupplier = CircuitBreaker.decorateCheckedSupplier(cb, connector::process);
   }
 
-  public Response circuitBreak() {
+  public Response businessProcess() {
     getStatus("执行开始前: ", cb);
     // use Try.of().recover() to deal with fallback
     Try<List<User>> result =
@@ -48,11 +51,12 @@ public class CircuitBreakerServiceNonAopImpl implements CircuitBreakerService {
                 })
             .recover(
                 t -> {
-                  log.error("方法被降级了: " + t.getLocalizedMessage() );
+                  log.error("方法被降级了: " + t.getLocalizedMessage());
                   getStatus("降级方法中:", cb);
                   return Collections.emptyList();
                 });
     getStatus("执行结束后: ", cb);
+    System.out.println();
     return new Response(result.get(), cb.getState());
   }
 }

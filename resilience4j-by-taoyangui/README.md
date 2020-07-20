@@ -1,3 +1,14 @@
+# Example order
+
+- refer to the unit test
+  - _1_circuitbreaker
+  - _2_timelimiter
+  - _3_retry
+- BusinessServiceNonAopImpl
+- BusinessServiceAopImpl
+- TimeLimiterBusinessServiceNonAopImpl
+- RetryBusinessServiceNonAopImpl
+
 # Resilience4j - 轻量级熔断框架
 
 - <https://www.jianshu.com/p/5531b66b777a>
@@ -12,7 +23,7 @@ Resilience4j是一款轻量级，易于使用的容错库，其灵感来自于Ne
 
 Resilience4j提供了以下的核心模块和拓展模块:
 
-核心模块：
+核心模块: 
 
 - resilience4j-circuitbreaker: Circuit breaking
 - resilience4j-ratelimiter: Rate limiting
@@ -21,15 +32,15 @@ Resilience4j提供了以下的核心模块和拓展模块:
 - resilience4j-cache: Result caching
 - resilience4j-timelimiter: Timeout handling
 
-## Circuit Breaker
+# Circuit Breaker
 
-### 简介
+## 简介
 
-CircuitBreaker通过具有三种正常状态的有限状态机实现：CLOSED，OPEN和HALF_OPEN以及两个特殊状态DISABLED和FORCED_OPEN。当熔断器关闭时，所有的请求都会通过熔断器。如果失败率超过设定的阈值，熔断器就会从关闭状态转换到打开状态，这时所有的请求都会被拒绝。当经过一段时间后，熔断器会从打开状态转换到半开状态，这时仅有一定数量的请求会被放入，并重新计算失败率，如果失败率超过阈值，则变为打开状态，如果失败率低于阈值，则变为关闭状态。
+CircuitBreaker通过具有三种正常状态的有限状态机实现: CLOSED，OPEN和HALF_OPEN以及两个特殊状态DISABLED和FORCED_OPEN。当熔断器关闭时，所有的请求都会通过熔断器。如果失败率超过设定的阈值，熔断器就会从关闭状态转换到打开状态，这时所有的请求都会被拒绝。当经过一段时间后，熔断器会从打开状态转换到半开状态，这时仅有一定数量的请求会被放入，并重新计算失败率，如果失败率超过阈值，则变为打开状态，如果失败率低于阈值，则变为关闭状态。
 
 ![image](image/1.jpg)
 
-Resilience4j记录请求状态的数据结构和Hystrix不同，Hystrix是使用滑动窗口来进行存储的，而Resilience4j采用的是Ring Bit Buffer(环形缓冲区)。Ring Bit Buffer在内部使用BitSet这样的数据结构来进行存储，BitSet的结构如下图所示：
+Resilience4j记录请求状态的数据结构和Hystrix不同，Hystrix是使用滑动窗口来进行存储的，而Resilience4j采用的是Ring Bit Buffer(环形缓冲区)。Ring Bit Buffer在内部使用BitSet这样的数据结构来进行存储，BitSet的结构如下图所示: 
 
 ![image](image/2.jpg)
 
@@ -39,18 +50,49 @@ Resilience4j记录请求状态的数据结构和Hystrix不同，Hystrix是使用
 
 当故障率高于设定的阈值时，熔断器状态会从由CLOSE变为OPEN。这时所有的请求都会抛出CallNotPermittedException异常。当经过一段时间后，熔断器的状态会从OPEN变为HALF_OPEN，HALF_OPEN状态下同样会有一个Ring Bit Buffer，用来计算HALF_OPEN状态下的故障率，如果高于配置的阈值，会转换为OPEN，低于阈值则装换为CLOSE。与CLOSE状态下的缓冲区不同的地方在于，HALF_OPEN状态下的缓冲区大小会限制请求数，只有缓冲区大小的请求数会被放入。
 
-除此以外，熔断器还会有两种特殊状态：DISABLED（始终允许访问）和FORCED_OPEN（始终拒绝访问）。这两个状态不会生成熔断器事件（除状态装换外），并且不会记录事件的成功或者失败。退出这两个状态的唯一方法是触发状态转换或者重置熔断器。
+除此以外，熔断器还会有两种特殊状态: DISABLED（始终允许访问）和FORCED_OPEN（始终拒绝访问）。这两个状态不会生成熔断器事件（除状态装换外），并且不会记录事件的成功或者失败。退出这两个状态的唯一方法是触发状态转换或者重置熔断器。
 
-熔断器关于线程安全的保证措施有以下几个部分：
+熔断器关于线程安全的保证措施有以下几个部分: 
 
 - 熔断器的状态使用AtomicReference保存的
 - 更新熔断器状态是通过无状态的函数或者原子操作进行的
 - 更新事件的状态用synchronized关键字保护
 - 意味着同一时间只有一个线程能够修改熔断器状态或者记录事件的状态。
 
-### 可配置参数
+## 可配置参数
 
 ![image](image/3.png)
+
+## 要点
+
+以下为几个需要注意的点: 
+
+- 失败率的计算必须等环装满才会计算
+- 白名单优先级高于黑名单且白名单上的异常会被忽略，不会占用缓冲环位置，即不会计入失败率计算
+- 熔断器打开时同样会计算失败率，当状态转换为半开时重置为-1
+- 只要出现异常都可以调用降级方法，不论是在白名单还是黑名单
+- 熔断器的缓冲环有两个，一个关闭时的缓冲环，一个打开时的缓冲环
+- 熔断器关闭时，直至熔断器状态转换前所有请求都会通过，不会受到限制
+- 熔断器半开时，限制请求数为缓冲环的大小，其他请求会等待
+- 熔断器从打开到半开的转换默认还需要请求进行触发，也可通过automaticTransitionFromOpenToHalfOpenEnabled=true设置为自动触发
+
+# TimeLimiter
+
+实现的原理和Hystrix相似, 通过调用Future的get方法来进行超时控制。
+
+原文说,
+
+> TimeLimiter没有配置自动注入，需要自己进行注入，写下面两个文件进行配置自动注入: 
+
+但在`resilience4j-spring-boot2`版本1.5.0测试, 在日志中发现,
+```java
+   TimeLimiterAutoConfiguration matched:
+      - @ConditionalOnClass found required class 'io.github.resilience4j.timelimiter.TimeLimiter' (OnClassCondition)
+```
+
+所以应该不需要自己手写`TimeLimiterConfig`配置.
+
+--------------------------------------------------------------------------------
 
 # Java development environment
 
