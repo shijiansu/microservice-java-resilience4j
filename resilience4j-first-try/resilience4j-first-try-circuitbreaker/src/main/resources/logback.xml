@@ -2,7 +2,7 @@
 <configuration>
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-      <pattern>%d{HH:mm:ss} [%-25thread] %logger{0} - %msg%n</pattern>
+      <pattern>%d{HH:mm:ss} [%-15thread] [%-5level] %logger{0} - %msg%n</pattern>
     </encoder>
   </appender>
   <logger name="org.springframework.web" level="TRACE"/>

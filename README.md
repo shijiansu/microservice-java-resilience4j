@@ -9,7 +9,6 @@
 ![](https://img.shields.io/github/languages/code-size/shijiansu/microservice-java-resilience4j)
 ![](https://img.shields.io/github/repo-size/shijiansu/microservice-java-resilience4j)
 ![](https://img.shields.io/github/last-commit/shijiansu/microservice-java-resilience4j?color=red)
-
 ![](https://github.com/shijiansu/microservice-java-resilience4j/workflows/ci%20build/badge.svg)
 
 --------------------------------------------------------------------------------
@@ -21,6 +20,7 @@
   - resilience4j-first-try-ratelimiter - examples of rate limiter (control on request #)
   - resilience4j-first-try-bulkhead - examples of bulkhead (control on Thread #)
   - resilience4j-first-try-timelimiter - examples of time limter (control on Future process time)
+- resilience4j-by-taoyangui
 
 --------------------------------------------------------------------------------
 

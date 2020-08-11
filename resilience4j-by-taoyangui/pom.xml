@@ -37,7 +37,6 @@
       <groupId>org.springframework.boot</groupId><!-- enable AOP, so that can use @CircuitBreaker -->
       <artifactId>spring-boot-starter-aop</artifactId>
     </dependency>
-
     <!-- [END] examples -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -63,6 +62,14 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>versions-maven-plugin</artifactId>
+        <version>2.7</version>
+        <configuration>
+          <rulesUri>file://${project.basedir}/pom-version-rules.xml</rulesUri>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
