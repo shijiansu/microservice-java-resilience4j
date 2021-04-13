@@ -64,14 +64,14 @@ function project_test() {
     ## %-80s: append 80 spaces on the right, if not reach to 80
     ## [20210411] update the name
     ## ${CURRENT_DIR##*/}: only take sub string after the last /
-    printf "%-80s   SUCCESS: %2d   FAILED: %2d\n" "${CURRENT_DIR##*/}" ${succ} ${failed} >> "${repo_test_report}"
+    # printf "%-80s   SUCCESS: %2d   FAILED: %2d\n" "${CURRENT_DIR##*/}" ${succ} ${failed} >> "${repo_test_report}"
     ## [20210411]
-    # local ROOT_PROJECT="${__30IT_GIT}"
-    # echo "${ROOT_PROJECT}------------------------------------xxxx"
-    # local NAME_INDEX=$(awk -v a="${CURRENT_DIR}" -v b="${ROOT_PROJECT}" 'BEGIN{print index(a,b)}')
-    # NAME_INDEX=$(( NAME_INDEX + ${#ROOT_PROJECT} + 1 )) # remove till 1st sub folder in ${ROOT_PROJECT}
-    # local NAME=$(echo "${CURRENT_DIR}" | cut -c ${NAME_INDEX}-)
-    # printf "%-80s   SUCCESS: %2d   FAILED: %2d\n" "${NAME}" ${succ} ${failed} >> "${repo_test_report}"
+    local ROOT_PROJECT="github"
+    echo "${ROOT_PROJECT}------------------------------------xxxx"
+    local NAME_INDEX=$(awk -v a="${CURRENT_DIR}" -v b="${ROOT_PROJECT}" 'BEGIN{print index(a,b)}')
+    NAME_INDEX=$(( NAME_INDEX + ${#ROOT_PROJECT} + 1 )) # remove till 1st sub folder in ${ROOT_PROJECT}
+    local NAME=$(echo "${CURRENT_DIR}" | cut -c ${NAME_INDEX}-)
+    printf "%-80s   SUCCESS: %2d   FAILED: %2d\n" "${NAME}" ${succ} ${failed} >> "${repo_test_report}"
   fi
 }
 
