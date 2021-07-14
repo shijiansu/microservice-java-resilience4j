@@ -1,17 +1,16 @@
+# microservice-java-resilience4j
+
 ![](https://img.shields.io/badge/language-java-blue)
 ![](https://img.shields.io/badge/technology-resilience4j,%20rate%20limiting,%20circuit%20breaker-blue)
 ![](https://img.shields.io/badge/development%20year-2020-orange)
-![](https://img.shields.io/badge/contributor-shijian%20su-purple)
-![](https://img.shields.io/badge/license-MIT-lightgrey)
 
 ![](https://img.shields.io/github/languages/top/shijiansu/microservice-java-resilience4j)
 ![](https://img.shields.io/github/languages/count/shijiansu/microservice-java-resilience4j)
 ![](https://img.shields.io/github/languages/code-size/shijiansu/microservice-java-resilience4j)
 ![](https://img.shields.io/github/repo-size/shijiansu/microservice-java-resilience4j)
 ![](https://img.shields.io/github/last-commit/shijiansu/microservice-java-resilience4j?color=red)
-![](https://github.com/shijiansu/microservice-java-resilience4j/workflows/ci%20build/badge.svg)
 
---------------------------------------------------------------------------------
+## Outline
 
 - resilience4j-first-try - examples of first try - TODO - include examples of resilience4j official examples
   - resilience4j-first-try-common - examples of common classes use for all below projects
@@ -22,9 +21,7 @@
   - resilience4j-first-try-timelimiter - examples of time limter (control on Future process time)
 - resilience4j-by-taoyangui
 
---------------------------------------------------------------------------------
-
-# How to learn
+## How to learn
 
 主要参考官网, 官网中有对应的参数文档和例子.
 
@@ -37,7 +34,7 @@
 
 监控, 整合了`Micrometer`和`Grafana`, 也在官网中有介绍
 
-# Introduction
+## Introduction
 
 - Resilience4j
   - it has dependencies of `io.vavr.vavr`, which is a enhanced functional programming library. 
@@ -46,9 +43,6 @@
   - OPEN <==> HALF_OPEN: 双向转换. 打开状态的持续时间结束, 熔断器的状态由打开状态转换到半开状态. 这时允许一定数量的请求通过, 当这些请求的失败率超过阈值, 熔断器的状态由半开状态转换回打开状态. 半开时请求的数量是由CircuitBreakerConfig实例的ringBufferSizeInHalfOpenState属性值设置的.
   - HALF_OPEN ==> CLOSED: 如果请求失败率小于阈值, 则熔断器的状态由半开状态转换到关闭状态.
 
---------------------------------------------------------------------------------
-
-# Execute all tests in repo
+## Execute all tests in repo
 
 `/bin/bash run-repo-test.sh`
-
